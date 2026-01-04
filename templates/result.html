@@ -1,17 +1,66 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-    <title>Résultat Quiz</title>
-  </head>
-  <body>
-    <h1>Résultat du quiz</h1>
+<head>
+  <meta charset="UTF-8">
+  <title>Résultat du Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      padding: 10px 20px;
+      margin-bottom: 15px;
+    }
+    legend {
+      font-weight: bold;
+    }
+    label {
+      font-size: 1.1em;
+      margin-bottom: 3px;
+      display: block;
+    }
+    .correct {
+      color: green;
+      font-weight: bold;
+    }
+    .wrong {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Résultat du Quiz</h1>
+  <p>Score : {{ score }} / {{ total }}</p>
+  <hr>
 
-    <p>Score : {{ score }} / {{ total }}</p>
+  {% for q in quiz %}
+    {% set i = loop.index0 %}
+    <fieldset>
+      <legend>{{ q.question }}</legend>
 
-    <a href="/">Refaire un quiz</a>
-  </body>
+      {% for key, value in q.choices.items() %}
+        {% set user_ans = user_answers['q' ~ i] %}
+        {% if key == q.correct %}
+          <label class="correct">
+            {{ key }}) {{ value }} ✅
+          </label>
+        {% elif key == user_ans and key != q.correct %}
+          <label class="wrong">
+            {{ key }}) {{ value }} ❌
+          </label>
+        {% else %}
+          <label>
+            {{ key }}) {{ value }}
+          </label>
+        {% endif %}
+      {% endfor %}
+    </fieldset>
+  {% endfor %}
+
+  <a href="/">🔄 Refaire un quiz</a>
+</body>
 </html>

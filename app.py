@@ -93,13 +93,14 @@ def index():
 
 @app.route("/result", methods=["POST"])
 def result():
-    quiz = session.get("quiz", [])  # questions stockées
+    quiz = session.get("quiz", [])
+    user_answers = {}
     score = 0
 
     for i, q in enumerate(quiz):
-        user_answer = request.form.get(f"q{i}")  # ex: q0, q1, q2
-
-        if user_answer == q["correct"]:
+        ans = request.form.get(f"q{i}")
+        user_answers[f"q{i}"] = ans
+        if ans == q["correct"]:
             score += 1
 
     total = len(quiz)
@@ -109,8 +110,9 @@ def result():
         score=score,
         total=total,
         quiz=quiz,
-        user_answers=request.form
+        user_answers=user_answers
     )
+
 
 
 
