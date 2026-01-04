@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <title>Quiz IA Gemini</title>
+  </head>
+  <body>
+    <h1>Quiz IA Gemini</h1>
+
+    <!-- Formulaire pour le topic -->
+    <form method="POST">
+      <input
+        type="text"
+        name="topic"
+        placeholder="Ex: Python, HTML, IA"
+        required
+      />
+      <button type="submit">Générer le quiz</button>
+    </form>
+
+    <hr />
+
+    {% if quiz %}
+    <form method="POST" action="/result">
+      {% for q in quiz %} {% set q_index = loop.index0 %}
+      <fieldset>
+        <legend><strong>{{ q.question }}</strong></legend>
+
+        {% for key, value in q.choices.items() %}
+        <label>
+          <input
+            type="radio"
+            name="q{{ q_index }}"
+            value="{{ key }}"
+            required
+          />
+          {{ key }} {{ value }} </label
+        ><br />
+        {% endfor %}
+      </fieldset>
+      <br />
+      {% endfor %}
+
+      <button type="submit">Valider</button>
+    </form>
+    {% endif %}
+
+    <div id="loader" style="display: none">
+      <p>⏳ Génération du score...</p>
+    </div>
+  </body>
+</html>

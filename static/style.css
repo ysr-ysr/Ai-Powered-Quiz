@@ -1,0 +1,18 @@
+body {
+  font-family: Arial;
+  text-align: center;
+  padding: 50px;
+  background: #f5f5ff;
+}
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #6c63ff;
+  color: white;
+  cursor: pointer;
+}
+#loader {
+  display: none;
+  margin-top: 20px;
+}
