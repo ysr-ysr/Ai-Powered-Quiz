@@ -76,6 +76,26 @@ label {
   color: #3b0270;
 }
 
+select {
+  margin-bottom: 20px; /* Add some space below the select dropdown */
+  width: calc(100% - 24px);
+  padding: 12px;
+  border: 1px solid #e9b3fb;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1em;
+  color: #3b0270;
+  background-color: #ffffff;
+  appearance: none; /* Remove default browser styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%233b0270%22%20d%3D%22M287%20197.9L159.2%2069.2c-5.9-5.9-15.4-5.9-21.3%200L5.3%20197.9c-3.2%203.2-5.3%207.3-5.3%2012.3s2.1%209.1%205.3%2012.3c3.2%203.2%207.3%205.3%2012.3%205.3s9.1-2.1%2012.3-5.3L148.5%2092.8l128.7%20128.8c3.2%203.2%207.3%205.3%2012.3%205.3s9.1-2.1%2012.3-5.3c3.2-3.2%205.3-7.3%205.3-12.3-.1-5.1-2.2-9.2-5.4-12.4z%22%2F%3E%3C%2Fsvg%3E"); /* Custom dropdown arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 30px; /* Make space for the arrow */
+}
+
 #loader {
   display: none;
   margin-top: 30px;

@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#fff1f1">
+    <meta name="theme-color" content="#fff1f1" />
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <title>Quiz IA Gemini</title>
   </head>
   <body>
@@ -25,6 +25,13 @@
           placeholder="E.g., Python, HTML, AI..."
           required
         />
+
+        <label for="difficulty">Difficulty:</label>
+        <select id="difficulty" name="difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
         <button type="submit">Generate Quiz</button>
       </form>
 

@@ -13,34 +13,67 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5
 # -------------------------------
 # Fonction pour générer les questions avec Gemini
 # -------------------------------
-def generate_questions(topic):
-    prompt = f"""
-    Create 5 easy multiple-choice questions (MCQs) about {topic}.
+def generate_questions(topic, difficulty="easy"):
+    # Ajuste le prompt selon la difficulté
+    if difficulty == "easy":
+        prompt = f"""
+        Create 10 easy multiple-choice questions (MCQs) about {topic}.
 
-Exact format:
-Question: ...
-A) ...
-B) ...
-C) ...
-D) ...
-Answer: A
+        Exact format:
+        Question: ...
+        A) ...
+        B) ...
+        C) ...
+        D) ...
+        Answer: A
+        """
+    elif difficulty == "medium":
+        prompt = f"""
+        Create 10 medium-level multiple-choice questions (MCQs) about {topic}, slightly tricky.
 
-    """
+        Exact format:
+        Question: ...
+        A) ...
+        B) ...
+        C) ...
+        D) ...
+        Answer: A
+        """
+    elif difficulty == "hard":
+        prompt = f"""
+        Create 10 hard multiple-choice questions (MCQs) about {topic}, challenging with tricky options.
+
+        Exact format:
+        Question: ...
+        A) ...
+        B) ...
+        C) ...
+        D) ...
+        Answer: A
+        """
+    else:
+        prompt = f"""
+        Create 10 easy multiple-choice questions (MCQs) about {topic}.
+
+        Exact format:
+        Question: ...
+        A) ...
+        B) ...
+        C) ...
+        D) ...
+        Answer: A
+        """
 
     response = requests.post(
         GEMINI_URL,
-        json={
-            "contents": [{"parts": [{"text": prompt}]}]
-        }
+        json={"contents": [{"parts": [{"text": prompt}]}]}
     )
 
     data = response.json()
 
-    # 🔹 Vérification pour éviter KeyError
     if "candidates" in data and len(data["candidates"]) > 0:
         return data["candidates"][0]["content"]["parts"][0]["text"]
     else:
-        # Affiche l'erreur pour debug
         print("Erreur API Gemini:", data)
         return "Erreur : impossible de générer les questions pour le moment."
 
@@ -87,7 +120,8 @@ def index():
 
     if request.method == "POST":
         topic = request.form["topic"]
-        raw_text = generate_questions(topic)
+        difficulty = request.form.get("difficulty", "easy")
+        raw_text = generate_questions(topic, difficulty)
         quiz = parse_questions(raw_text)
 
         # 👉 stocker le quiz pour la correction
