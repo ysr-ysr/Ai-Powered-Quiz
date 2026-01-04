@@ -1,55 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fff1f1">
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <title>Quiz IA Gemini</title>
   </head>
   <body>
-    <h1>Quiz IA Gemini</h1>
+    <div class="container">
+      <h1>✨ Quiz Generator ✨</h1>
 
-    <!-- Formulaire pour le topic -->
-    <form method="POST">
-      <input
-        type="text"
-        name="topic"
-        placeholder="Ex: Python, HTML, IA"
-        required
-      />
-      <button type="submit">Générer le quiz</button>
-    </form>
+      <!-- Formulaire pour le topic -->
+      <form method="POST" id="quiz-topic-form">
+        <label for="topic">Enter Quiz Topic:</label>
+        <input
+          type="text"
+          id="topic"
+          name="topic"
+          placeholder="E.g., Python, HTML, AI..."
+          required
+        />
+        <button type="submit">Generate Quiz</button>
+      </form>
 
-    <hr />
+      <div id="loader">
+        <img
+          src="{{ url_for('static', filename='loader.gif') }}"
+          alt="Loading..."
+        />
+        <p>Generating Quiz...</p>
+      </div>
 
-    {% if quiz %}
-    <form method="POST" action="/result">
-      {% for q in quiz %} {% set q_index = loop.index0 %}
-      <fieldset>
-        <legend><strong>{{ q.question }}</strong></legend>
-
-        {% for key, value in q.choices.items() %}
-        <label>
-          <input
-            type="radio"
-            name="q{{ q_index }}"
-            value="{{ key }}"
-            required
-          />
-          {{ key }} {{ value }} </label
-        ><br />
+      {% if quiz %}
+      <form method="POST" action="/result" id="quiz-form">
+        {% for q in quiz %} {% set q_index = loop.index0 %}
+        <div class="question-card">
+          <p>{{ loop.index }}. {{ q.question }}</p>
+          <div class="options-container">
+            {% for key, value in q.choices.items() %}
+            <button
+              type="button"
+              class="option-button"
+              data-question-index="{{ q_index }}"
+              data-value="{{ key }}"
+            >
+              {{ key }}. {{ value }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
         {% endfor %}
-      </fieldset>
-      <br />
-      {% endfor %}
 
-      <button type="submit">Valider</button>
-    </form>
-    {% endif %}
-
-    <div id="loader" style="display: none">
-      <p>⏳ Génération du score...</p>
+        <button type="submit">Submit Quiz</button>
+      </form>
+      {% endif %}
     </div>
+
+    <script>
+      const quizTopicForm = document.getElementById("quiz-topic-form");
+      const quizForm = document.getElementById("quiz-form");
+      const loader = document.getElementById("loader");
+      const optionButtons = document.querySelectorAll(".option-button");
+
+      if (quizTopicForm) {
+        quizTopicForm.addEventListener("submit", () => {
+          loader.style.display = "block";
+          quizTopicForm.style.display = "none";
+        });
+      }
+
+      optionButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const questionIndex = button.dataset.questionIndex;
+          const value = button.dataset.value;
+
+          // Remove selected class from other options for the same question
+          document
+            .querySelectorAll(
+              `.option-button[data-question-index="${questionIndex}"]`
+            )
+            .forEach((btn) => {
+              btn.classList.remove("selected");
+            });
+
+          // Add selected class to the clicked button
+          button.classList.add("selected");
+
+          // Create or update a hidden input for the selected answer
+          let hiddenInput = document.querySelector(
+            `input[name="q${questionIndex}"]`
+          );
+          if (!hiddenInput) {
+            hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = `q${questionIndex}`;
+            quizForm.appendChild(hiddenInput);
+          }
+          hiddenInput.value = value;
+        });
+      });
+
+      if (quizForm) {
+        quizForm.addEventListener("submit", () => {
+          loader.style.display = "block";
+          quizForm.style.display = "none";
+        });
+      }
+
+      // Hide loader if quiz is already displayed (e.g., after refresh with data)
+      window.addEventListener("load", () => {
+        if (quizForm && quizForm.style.display !== "none") {
+          loader.style.display = "none";
+        }
+      });
+    </script>
   </body>
 </html>

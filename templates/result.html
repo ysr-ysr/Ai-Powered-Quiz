@@ -1,66 +1,45 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Résultat du Quiz</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-    }
-    fieldset {
-      border: 1px solid #ccc;
-      padding: 10px 20px;
-      margin-bottom: 15px;
-    }
-    legend {
-      font-weight: bold;
-    }
-    label {
-      font-size: 1.1em;
-      margin-bottom: 3px;
-      display: block;
-    }
-    .correct {
-      color: green;
-      font-weight: bold;
-    }
-    .wrong {
-      color: red;
-    }
-  </style>
-</head>
-<body>
-  <h1>Résultat du Quiz</h1>
-  <p>Score : {{ score }} / {{ total }}</p>
-  <hr>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fff1f1">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>Quiz Result</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Quiz Result 👏🏻👏🏻</h1>
 
-  {% for q in quiz %}
-    {% set i = loop.index0 %}
-    <fieldset>
-      <legend>{{ q.question }}</legend>
+      <div class="score-container">
+        <p>
+          Your Score: <span class="final-score">{{ score }} / {{ total }}</span>
+        </p>
+      </div>
 
-      {% for key, value in q.choices.items() %}
-        {% set user_ans = user_answers['q' ~ i] %}
-        {% if key == q.correct %}
-          <label class="correct">
-            {{ key }}) {{ value }} ✅
-          </label>
-        {% elif key == user_ans and key != q.correct %}
-          <label class="wrong">
-            {{ key }}) {{ value }} ❌
-          </label>
-        {% else %}
-          <label>
-            {{ key }}) {{ value }}
-          </label>
-        {% endif %}
+      {% for q in quiz %} {% set i = loop.index0 %}
+      <div class="question-card">
+        <p>{{ loop.index }}. {{ q.question }}</p>
+        <div class="options-container">
+          {% for key, value in q.choices.items() %} {% set user_ans =
+          user_answers['q' ~ i] %}
+          <button
+            type="button"
+            class="option-button {% if key == q.correct %}correct{% elif key == user_ans and key != q.correct %}incorrect selected{% endif %}"
+          >
+            {{ key }}. {{ value }} {% if key == q.correct %} ✅ Correct {% elif
+            key == user_ans and key != q.correct %} ❌ Your Answer {% endif %}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
       {% endfor %}
-    </fieldset>
-  {% endfor %}
 
-  <a href="/">🔄 Refaire un quiz</a>
-</body>
+      <a href="/" class="retake-button"><button>Retake Quiz 🔄</button></a>
+    </div>
+  </body>
 </html>

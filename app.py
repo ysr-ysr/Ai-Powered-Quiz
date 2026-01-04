@@ -5,7 +5,8 @@ from flask import session
 SECRET_KEY = "secret123"
 
 # ⚡ Remplace par TA clé Gemini (créée dans Google Cloud)
-GEMINI_API_KEY = "AIzaSyAPTtVl6oeZScYHROhnXxnTcbDO6Md4beQ"
+#GEMINI_API_KEY = "AIzaSyAPTtVl6oeZScYHROhnXxnTcbDO6Md4beQ"
+GEMINI_API_KEY = "AIzaSyCwOzc6sI-fzR8gXWgZ1j6hMAIcg_FH-zo"
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" + GEMINI_API_KEY
 
@@ -14,28 +15,34 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5
 # -------------------------------
 def generate_questions(topic):
     prompt = f"""
-    Crée 5 questions QCM faciles sur {topic}.
+    Create 5 easy multiple-choice questions (MCQs) about {topic}.
 
-    Format EXACT :
-    Question: ...
-    A) ...
-    B) ...
-    C) ...
-    D) ...
-    Réponse: A
+Exact format:
+Question: ...
+A) ...
+B) ...
+C) ...
+D) ...
+Answer: A
+
     """
 
     response = requests.post(
         GEMINI_URL,
         json={
-            "contents": [{
-                "parts": [{"text": prompt}]
-            }]
+            "contents": [{"parts": [{"text": prompt}]}]
         }
     )
 
     data = response.json()
-    return data["candidates"][0]["content"]["parts"][0]["text"]
+
+    # 🔹 Vérification pour éviter KeyError
+    if "candidates" in data and len(data["candidates"]) > 0:
+        return data["candidates"][0]["content"]["parts"][0]["text"]
+    else:
+        # Affiche l'erreur pour debug
+        print("Erreur API Gemini:", data)
+        return "Erreur : impossible de générer les questions pour le moment."
 
 # --------------------------------
 # Fonction pour parser les questions
@@ -55,7 +62,7 @@ def parse_questions(text):
         for line in lines[1:]:
             if line.startswith(("A)", "B)", "C)", "D)")):
                 choices[line[0]] = line[3:]
-            elif line.startswith("Réponse"):
+            elif line.startswith("Answer:"):
                 correct = line.split(":")[1].strip()
 
         questions.append({
